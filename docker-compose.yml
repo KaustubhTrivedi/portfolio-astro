@@ -33,6 +33,8 @@ services:
       - /tmp:size=10M
     security_opt:
       - no-new-privileges:true
+    networks:
+      - npm_default
 
   # Development service (optional)
   portfolio-dev:
