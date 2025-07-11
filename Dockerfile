@@ -19,8 +19,9 @@ RUN npm run build
 # Stage 2: Production server
 FROM node:20-alpine AS production
 
-# Install serve globally for serving static files
-RUN npm install -g serve
+# Install serve globally and wget for healthcheck
+RUN npm install -g serve && \
+    apk add --no-cache wget
 
 # Create a non-root user
 RUN addgroup -g 1001 -S nodejs
