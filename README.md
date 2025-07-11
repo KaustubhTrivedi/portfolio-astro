@@ -63,10 +63,42 @@ docker run -p 3000:3000 portfolio-astro
 - **Development mode** - Hot reload support with volume mounting
 - **Non-root user** - Security-focused container execution
 - **Proxy-ready** - Designed to work with external nginx proxy managers
+- **Production optimized** - Resource limits, health checks, and security hardening
+- **Auto-restart** - Container automatically restarts on failure
 
 Your portfolio will be available at:
 - **Production**: http://localhost:3000
 - **Development**: http://localhost:4321
+
+### 🏭 Production Readiness
+
+This Docker setup is **production-ready** with the following optimizations:
+
+#### ✅ **Security**
+- Non-root user execution
+- Read-only filesystem
+- No privilege escalation
+- Minimal attack surface
+
+#### ✅ **Performance**
+- Resource limits (128MB RAM, 0.5 CPU)
+- Optimized static file serving
+- Lightweight Alpine Linux base
+- Multi-stage build for minimal image size
+
+#### ✅ **Reliability**
+- Health checks every 30 seconds
+- Auto-restart on failure (`unless-stopped`)
+- Graceful degradation handling
+- Container monitoring ready
+
+#### ✅ **Operations**
+- Compatible with nginx proxy manager
+- Easy horizontal scaling
+- Standard logging to stdout/stderr
+- Ready for orchestration (Docker Swarm, Kubernetes)
+
+Perfect for deployment behind your nginx proxy manager! 🚀
 
 ## 🌐 Live Demo
 
