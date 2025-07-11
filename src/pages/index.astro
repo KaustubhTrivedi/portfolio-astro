@@ -1,16 +1,476 @@
 ---
-
+import '../styles/global.css';
 ---
 
+<style>
+  /* Animation keyframes */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Add smooth transitions to all interactive elements */
+  * {
+    transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* Hero section animations */
+  .hero-title {
+    animation: fadeInUp 1s ease 0.2s both;
+  }
+
+  .hero-subtitle {
+    animation: fadeInUp 0.8s ease 0.5s both;
+  }
+
+  .hero-button {
+    animation: fadeInUp 0.8s ease 0.8s both;
+  }
+
+  .hero-background {
+    animation: fadeInScale 1.5s ease both;
+  }
+
+  /* Scroll animations - initially hidden */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease;
+  }
+
+  .animate-on-scroll.animate-left {
+    transform: translateX(-30px);
+  }
+
+  .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+  }
+
+  /* Stagger animation for cards */
+  .skill-card, .project-card {
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .skill-card.visible, .project-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .skill-card:hover, .project-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Timeline animations */
+  .timeline-item {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: all 0.8s ease;
+  }
+
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Contact icons animation */
+  .contact-icon {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+    transition: all 0.6s ease;
+  }
+
+  .contact-icon.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  /* Button hover effects */
+  button, .nav-link {
+    transition: all 0.2s ease;
+  }
+
+  button:hover, .nav-link:hover {
+    transform: scale(1.05);
+  }
+
+  /* Smooth scroll */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Parallax effect */
+  .hero-background {
+    will-change: transform;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          
+          // Stagger animation for child elements
+          if (entry.target.classList.contains('skills-grid') || entry.target.classList.contains('projects-grid')) {
+            const cards = entry.target.querySelectorAll('.skill-card, .project-card');
+            cards.forEach((card, index) => {
+              setTimeout(() => {
+                card.classList.add('visible');
+              }, index * 100);
+            });
+          }
+
+          if (entry.target.classList.contains('contact-icons')) {
+            const icons = entry.target.querySelectorAll('.contact-icon');
+            icons.forEach((icon, index) => {
+              setTimeout(() => {
+                icon.classList.add('visible');
+              }, index * 100);
+            });
+          }
+        }
+      });
+    }, observerOptions);
+
+    // Observe all elements that should animate
+    const animateElements = document.querySelectorAll('.animate-on-scroll, .skills-grid, .projects-grid, .timeline-item, .contact-icons');
+    animateElements.forEach(el => observer.observe(el));
+
+         // Parallax effect for hero background
+     let ticking = false;
+     function updateParallax() {
+       const scrolled = window.pageYOffset;
+       const heroBackground = document.querySelector('.hero-background') as HTMLElement;
+       if (heroBackground) {
+         heroBackground.style.transform = `translateY(${scrolled * 0.3}px)`;
+       }
+       ticking = false;
+     }
+
+     window.addEventListener('scroll', () => {
+       if (!ticking) {
+         requestAnimationFrame(updateParallax);
+         ticking = true;
+       }
+     });
+
+     // Smooth scroll for navigation links
+     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+       anchor.addEventListener('click', (e) => {
+         e.preventDefault();
+         const href = (anchor as HTMLAnchorElement).getAttribute('href') || '';
+         const target = document.querySelector(href);
+         if (target) {
+           target.scrollIntoView({
+             behavior: 'smooth',
+             block: 'start'
+           });
+         }
+       });
+     });
+  });
+</script>
+
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Work+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+
+    <title>Kaustubh Trivedi - Software Engineer</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.svg" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  </head>
+  <body>
+    <div class="relative flex size-full min-h-screen flex-col bg-gray-50 group/design-root overflow-x-hidden" style='font-family: "Work Sans", "Noto Sans", sans-serif;'>
+      <div class="layout-container flex h-full grow flex-col">
+        <header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e9edf1] px-10 py-3">
+          <div class="flex items-center gap-4 text-[#101419]">
+            <div class="size-4">
+              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z"
+                  fill="currentColor"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z"
+                  fill="currentColor"
+                ></path>
+              </svg>
+            </div>
+            <h2 class="text-[#101419] text-lg font-bold leading-tight tracking-[-0.015em]">Kaustubh Trivedi</h2>
+          </div>
+          <div class="flex flex-1 justify-end gap-8">
+            <div class="flex items-center gap-9">
+              <a class="text-[#101419] text-sm font-medium leading-normal" href="#about">About</a>
+              <a class="text-[#101419] text-sm font-medium leading-normal" href="#skills">Skills</a>
+              <a class="text-[#101419] text-sm font-medium leading-normal" href="#projects">Projects</a>
+              <a class="text-[#101419] text-sm font-medium leading-normal" href="#experience">Experience</a>
+              <a class="text-[#101419] text-sm font-medium leading-normal" href="#education">Education</a>
+              <a class="text-[#101419] text-sm font-medium leading-normal" href="#contact">Contact</a>
+            </div>
+            <button
+              class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#70a5db] text-[#101419] text-sm font-bold leading-normal tracking-[0.015em]"
+            >
+              <span class="truncate">View My Work</span>
+            </button>
+          </div>
+        </header>
+        <div class="px-40 flex flex-1 justify-center py-5">
+          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+            <div class="@container">
+              <div class="@[480px]:p-4">
+                <div
+                  class="hero-background flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @[480px]:gap-8 @[480px]:rounded-xl items-center justify-center p-4"
+                  style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBpE_ntW4ggTyrs00Jz3NSQCqn3fKK-qIJ5iRMZfFZC3abe5_DElvlAgl0wysjp35pTPTmNDPgO_g7YF7Iw4pkHuNzYxcTn5XnP7O61dlUzwxSgNQEO3ZzHNmt68Vj1sZ4KbyGYyNTAKgZeTrB0VQsMtiWsVbqoGLGIstV2tMXZjUOBugkZleKAkIG_g99fndBlpmsrceLNhxla-4kQHsXCv03sOhXQ2kTxoixAHhlyT1E4LLauUchVXrF96x9fv3ag4Tnz-z00_HgZ");'
+                >
+                  <div class="flex flex-col gap-2 text-center">
+                    <h1
+                      class="hero-title text-white text-4xl font-black leading-tight tracking-[-0.033em] @[480px]:text-5xl @[480px]:font-black @[480px]:leading-tight @[480px]:tracking-[-0.033em]"
+                    >
+                      Kaustubh Trivedi
+                    </h1>
+                    <h2 class="hero-subtitle text-white text-sm font-normal leading-normal @[480px]:text-base @[480px]:font-normal @[480px]:leading-normal">Software Engineer</h2>
+                  </div>
+                  <button
+                    class="hero-button flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 @[480px]:h-12 @[480px]:px-5 bg-[#70a5db] text-[#101419] text-sm font-bold leading-normal tracking-[0.015em] @[480px]:text-base @[480px]:font-bold @[480px]:leading-normal @[480px]:tracking-[0.015em]"
+                  >
+                    <span class="truncate">View My Work</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <h2 class="section-title animate-on-scroll animate-left text-[#101419] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5" id="about">About</h2>
+            <p class="section-content animate-on-scroll text-[#101419] text-base font-normal leading-normal pb-3 pt-1 px-4">
+              I'm a software engineer with 2 years of experience in building scalable and efficient web applications. My expertise lies in full-stack development, with a focus on creating user-centric solutions. I'm passionate about technology and constantly seeking new challenges to enhance my skills.
+            </p>
+            <h2 class="section-title animate-on-scroll animate-left text-[#101419] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5" id="skills">Skills</h2>
+            <div class="skills-grid grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
+                             <div class="skill-card flex flex-1 gap-3 rounded-lg border border-[#d3dbe4] bg-gray-50 p-4 flex-col">
+                 <div class="text-[#101419]" data-icon="Code" data-size="24px" data-weight="regular">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                     <path
+                       d="M69.12,94.15,28.5,128l40.62,33.85a8,8,0,1,1-10.24,12.29l-48-40a8,8,0,0,1,0-12.29l48-40a8,8,0,0,1,10.24,12.3Zm176,27.7-48-40a8,8,0,1,0-10.24,12.3L227.5,128l-40.62,33.85a8,8,0,1,0,10.24,12.29l48-40a8,8,0,0,0,0-12.29ZM162.73,32.48a8,8,0,0,0-10.25,4.79l-64,176a8,8,0,0,0,4.79,10.26A8.14,8.14,0,0,0,96,224a8,8,0,0,0,7.52-5.27l64-176A8,8,0,0,0,162.73,32.48Z"
+                     ></path>
+                   </svg>
+                 </div>
+                 <div class="flex flex-col gap-1">
+                   <h2 class="text-[#101419] text-base font-bold leading-tight">Programming Languages</h2>
+                   <p class="text-[#57738e] text-sm font-normal leading-normal">JavaScript, Python, Java</p>
+                 </div>
+               </div>
+               <div class="skill-card flex flex-1 gap-3 rounded-lg border border-[#d3dbe4] bg-gray-50 p-4 flex-col">
+                 <div class="text-[#101419]" data-icon="Database" data-size="24px" data-weight="regular">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                     <path
+                       d="M128,24C74.17,24,32,48.6,32,80v96c0,31.4,42.17,56,96,56s96-24.6,96-56V80C224,48.6,181.83,24,128,24Zm80,104c0,9.62-7.88,19.43-21.61,26.92C170.93,163.35,150.19,168,128,168s-42.93-4.65-58.39-13.08C55.88,147.43,48,137.62,48,128V111.36c17.06,15,46.23,24.64,80,24.64s62.94-9.68,80-24.64ZM69.61,53.08C85.07,44.65,105.81,40,128,40s42.93,4.65,58.39,13.08C200.12,60.57,208,70.38,208,80s-7.88,19.43-21.61,26.92C170.93,115.35,150.19,120,128,120s-42.93-4.65-58.39-13.08C55.88,99.43,48,89.62,48,80S55.88,60.57,69.61,53.08ZM186.39,202.92C170.93,211.35,150.19,216,128,216s-42.93-4.65-58.39-13.08C55.88,195.43,48,185.62,48,176V159.36c17.06,15,46.23,24.64,80,24.64s62.94-9.68,80-24.64V176C208,185.62,200.12,195.43,186.39,202.92Z"
+                     ></path>
+                   </svg>
+                 </div>
+                 <div class="flex flex-col gap-1">
+                   <h2 class="text-[#101419] text-base font-bold leading-tight">Databases</h2>
+                   <p class="text-[#57738e] text-sm font-normal leading-normal">MySQL, PostgreSQL, MongoDB</p>
+                 </div>
+               </div>
+               <div class="skill-card flex flex-1 gap-3 rounded-lg border border-[#d3dbe4] bg-gray-50 p-4 flex-col">
+                 <div class="text-[#101419]" data-icon="Database" data-size="24px" data-weight="regular">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                     <path
+                       d="M128,24C74.17,24,32,48.6,32,80v96c0,31.4,42.17,56,96,56s96-24.6,96-56V80C224,48.6,181.83,24,128,24Zm80,104c0,9.62-7.88,19.43-21.61,26.92C170.93,163.35,150.19,168,128,168s-42.93-4.65-58.39-13.08C55.88,147.43,48,137.62,48,128V111.36c17.06,15,46.23,24.64,80,24.64s62.94-9.68,80-24.64ZM69.61,53.08C85.07,44.65,105.81,40,128,40s42.93,4.65,58.39,13.08C200.12,60.57,208,70.38,208,80s-7.88,19.43-21.61,26.92C170.93,115.35,150.19,120,128,120s-42.93-4.65-58.39-13.08C55.88,99.43,48,89.62,48,80S55.88,60.57,69.61,53.08ZM186.39,202.92C170.93,211.35,150.19,216,128,216s-42.93-4.65-58.39-13.08C55.88,195.43,48,185.62,48,176V159.36c17.06,15,46.23,24.64,80,24.64s62.94-9.68,80-24.64V176C208,185.62,200.12,195.43,186.39,202.92Z"
+                     ></path>
+                   </svg>
+                 </div>
+                 <div class="flex flex-col gap-1">
+                   <h2 class="text-[#101419] text-base font-bold leading-tight">Backend Technologies</h2>
+                   <p class="text-[#57738e] text-sm font-normal leading-normal">Node.js, Express, Django</p>
+                 </div>
+               </div>
+               <div class="skill-card flex flex-1 gap-3 rounded-lg border border-[#d3dbe4] bg-gray-50 p-4 flex-col">
+                 <div class="text-[#101419]" data-icon="GitCommit" data-size="24px" data-weight="regular">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                     <path
+                       d="M248,120H183.42a56,56,0,0,0-110.84,0H8a8,8,0,0,0,0,16H72.58a56,56,0,0,0,110.84,0H248a8,8,0,0,0,0-16ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z"
+                     ></path>
+                   </svg>
+                 </div>
+                 <div class="flex flex-col gap-1">
+                   <h2 class="text-[#101419] text-base font-bold leading-tight">Version Control</h2>
+                   <p class="text-[#57738e] text-sm font-normal leading-normal">Git, GitHub</p>
+                 </div>
+               </div>
+            </div>
+            <h2 class="section-title animate-on-scroll animate-left text-[#101419] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5" id="projects">Projects</h2>
+            <div class="projects-grid grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
+              <div class="project-card flex flex-col gap-3 pb-3">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl"
+                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDjupDtp97jzzxPdKEMZtDRTk-w165jnT4sbgONC0EcuvJzzABYG6xat2ojMXY06RcLZEjVeNKWng0wvXomPpAccYbNTbxFpq-9WnNTBjhewZdit5TvrcIqz5E2S2gwacneSUAA9xOjZRXodpDN-tdKJ07u3pQMwcAtBpf1nEUEgTTUTQa30V3Eaw8cPHyYElrSxfgd63vXmjwzokT3aNg5M_17w2noKK3KiL5r_h1ek7_HVGlygtwlS5ivD1fF1zKIG4NPVcw5bZih");'
+                ></div>
+                <div>
+                  <p class="text-[#101419] text-base font-medium leading-normal">Project Alpha</p>
+                  <p class="text-[#57738e] text-sm font-normal leading-normal">A web application for managing tasks efficiently.</p>
+                </div>
+              </div>
+              <div class="project-card flex flex-col gap-3 pb-3">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl"
+                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBsJ1b1xcP0iaX5v7kOQUCv605C-56lMP2FAC_WrrdfbX8uez1jdyRT9ImomJpM-sXE8gWxiVFoKASgMfjGlpi79q7eDFGMqcOWhNU4OSy23uWQVDzSMgfazinP5YAQs8gzka1bTPzcGu6z6qyTx0YZGYkemEfdRy2MV6lnUQHXU_JkmXImL3pgRRMb9X9zE9s8AubdhtF0eQbaxeNknD3mWzJAZ4evjZ3ACnrRMNWTxf2wZdEbFIKuRZ6uo0hK-epqInOTsjZc-i2f");'
+                ></div>
+                <div>
+                  <p class="text-[#101419] text-base font-medium leading-normal">Project Beta</p>
+                  <p class="text-[#57738e] text-sm font-normal leading-normal">An e-commerce platform with a focus on user experience.</p>
+                </div>
+              </div>
+              <div class="project-card flex flex-col gap-3 pb-3">
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl"
+                  style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCc-q67GIQ-ieaYnc3wTb5oouBbCphyeSo4ZkuVTczmZRMglHXXUOqClEF94gRmR-Q1e_LP9HOiDtD2isnfrWxzUSbrPoD9Bfg5KQTZvHpjcvHZ01O090O_2xXoJG5X6nFkesQXhY-BW3F076t3eJ1OZHhOrWQLUMOqtLS08HB6vIpb5gHbgK71_GmMejfI6cziwsWTfcOC4mC95RroGKF-cdOgiCnFqsj8bhugoU5Y23ri88eOArAQOvkPP4eA0HZNA5DRDng19FuR");'
+                ></div>
+                <div>
+                  <p class="text-[#101419] text-base font-medium leading-normal">Project Gamma</p>
+                  <p class="text-[#57738e] text-sm font-normal leading-normal">A data analytics tool for visualizing complex datasets.</p>
+                </div>
+              </div>
+            </div>
+            <h2 class="section-title animate-on-scroll animate-left text-[#101419] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5" id="experience">Professional Experience</h2>
+            <div class="timeline-item grid grid-cols-[40px_1fr] gap-x-2 px-4">
+              <div class="flex flex-col items-center gap-1 pt-3">
+                <div class="text-[#101419]" data-icon="Briefcase" data-size="24px" data-weight="regular">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                    <path
+                      d="M216,56H176V48a24,24,0,0,0-24-24H104A24,24,0,0,0,80,48v8H40A16,16,0,0,0,24,72V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V72A16,16,0,0,0,216,56ZM96,48a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96ZM216,72v41.61A184,184,0,0,1,128,136a184.07,184.07,0,0,1-88-22.38V72Zm0,128H40V131.64A200.19,200.19,0,0,0,128,152a200.25,200.25,0,0,0,88-20.37V200ZM104,112a8,8,0,0,1,8-8h32a8,8,0,0,1,0,16H112A8,8,0,0,1,104,112Z"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="w-[1.5px] bg-[#d3dbe4] h-2 grow"></div>
+              </div>
+              <div class="flex flex-1 flex-col py-3">
+                <p class="text-[#101419] text-base font-medium leading-normal">Software Engineer at Tech Innovators Inc.</p>
+                <p class="text-[#57738e] text-base font-normal leading-normal">2022 - Present</p>
+              </div>
+              <div class="flex flex-col items-center gap-1 pb-3">
+                <div class="w-[1.5px] bg-[#d3dbe4] h-2"></div>
+                <div class="text-[#101419]" data-icon="Briefcase" data-size="24px" data-weight="regular">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                    <path
+                      d="M216,56H176V48a24,24,0,0,0-24-24H104A24,24,0,0,0,80,48v8H40A16,16,0,0,0,24,72V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V72A16,16,0,0,0,216,56ZM96,48a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96ZM216,72v41.61A184,184,0,0,1,128,136a184.07,184.07,0,0,1-88-22.38V72Zm0,128H40V131.64A200.19,200.19,0,0,0,128,152a200.25,200.25,0,0,0,88-20.37V200ZM104,112a8,8,0,0,1,8-8h32a8,8,0,0,1,0,16H112A8,8,0,0,1,104,112Z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="flex flex-1 flex-col py-3">
+                <p class="text-[#101419] text-base font-medium leading-normal">Junior Developer at Startup X</p>
+                <p class="text-[#57738e] text-base font-normal leading-normal">2020 - 2022</p>
+              </div>
+            </div>
+            <h2 class="section-title animate-on-scroll animate-left text-[#101419] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5" id="education">Education</h2>
+            <div class="timeline-item grid grid-cols-[40px_1fr] gap-x-2 px-4">
+              <div class="flex flex-col items-center gap-1 pt-3 pb-3">
+                <div class="text-[#101419]" data-icon="GraduationCap" data-size="24px" data-weight="regular">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                    <path
+                      d="M251.76,88.94l-120-64a8,8,0,0,0-7.52,0l-120,64a8,8,0,0,0,0,14.12L32,117.87v48.42a15.91,15.91,0,0,0,4.06,10.65C49.16,191.53,78.51,216,128,216a130,130,0,0,0,48-8.76V240a8,8,0,0,0,16,0V199.51a115.63,115.63,0,0,0,27.94-22.57A15.91,15.91,0,0,0,224,166.29V117.87l27.76-14.81a8,8,0,0,0,0-14.12ZM128,200c-43.27,0-68.72-21.14-80-33.71V126.4l76.24,40.66a8,8,0,0,0,7.52,0L176,143.47v46.34C163.4,195.69,147.52,200,128,200Zm80-33.75a97.83,97.83,0,0,1-16,14.25V134.93l16-8.53ZM188,118.94l-.22-.13-56-29.87a8,8,0,0,0-7.52,14.12L171,128l-43,22.93L25,96,128,41.07,231,96Z"
+                    ></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="flex flex-1 flex-col py-3">
+                <p class="text-[#101419] text-base font-medium leading-normal">Master of Science in Computer Science, University of Technology</p>
+                <p class="text-[#57738e] text-base font-normal leading-normal">2020</p>
+              </div>
+            </div>
+            <h2 class="section-title animate-on-scroll animate-left text-[#101419] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5" id="contact">Contact</h2>
+            <div class="@container">
+                             <div class="contact-icons gap-2 px-4 flex flex-wrap justify-start">
+                 <div class="contact-icon flex flex-col items-center gap-2 bg-gray-50 py-2.5 text-center w-20">
+                   <div class="rounded-full bg-[#e9edf1] p-2.5">
+                     <div class="text-[#101419]" data-icon="LinkedinLogo" data-size="20px" data-weight="regular">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                         <path
+                           d="M216,24H40A16,16,0,0,0,24,40V216a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V40A16,16,0,0,0,216,24Zm0,192H40V40H216V216ZM96,112v64a8,8,0,0,1-16,0V112a8,8,0,0,1,16,0Zm88,28v36a8,8,0,0,1-16,0V140a20,20,0,0,0-40,0v36a8,8,0,0,1-16,0V112a8,8,0,0,1,15.79-1.78A36,36,0,0,1,184,140ZM100,84A12,12,0,1,1,88,72,12,12,0,0,1,100,84Z"
+                         ></path>
+                       </svg>
+                     </div>
+                   </div>
+                   <p class="text-[#101419] text-sm font-medium leading-normal">LinkedIn</p>
+                 </div>
+                 <div class="contact-icon flex flex-col items-center gap-2 bg-gray-50 py-2.5 text-center w-20">
+                   <div class="rounded-full bg-[#e9edf1] p-2.5">
+                     <div class="text-[#101419]" data-icon="TwitterLogo" data-size="20px" data-weight="regular">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                         <path
+                           d="M247.39,68.94A8,8,0,0,0,240,64H209.57A48.66,48.66,0,0,0,168.1,40a46.91,46.91,0,0,0-33.75,13.7A47.9,47.9,0,0,0,120,88v6.09C79.74,83.47,46.81,50.72,46.46,50.37a8,8,0,0,0-13.65,4.92c-4.31,47.79,9.57,79.77,22,98.18a110.93,110.93,0,0,0,21.88,24.2c-15.23,17.53-39.21,26.74-39.47,26.84a8,8,0,0,0-3.85,11.93c.75,1.12,3.75,5.05,11.08,8.72C53.51,229.7,65.48,232,80,232c70.67,0,129.72-54.42,135.75-124.44l29.91-29.9A8,8,0,0,0,247.39,68.94Zm-45,29.41a8,8,0,0,0-2.32,5.14C196,166.58,143.28,216,80,216c-10.56,0-18-1.4-23.22-3.08,11.51-6.25,27.56-17,37.88-32.48A8,8,0,0,0,92,169.08c-.47-.27-43.91-26.34-44-96,16,13,45.25,33.17,78.67,38.79A8,8,0,0,0,136,104V88a32,32,0,0,1,9.6-22.92A30.94,30.94,0,0,1,167.9,56c12.66.16,24.49,7.88,29.44,19.21A8,8,0,0,0,204.67,80h16Z"
+                         ></path>
+                       </svg>
+                     </div>
+                   </div>
+                   <p class="text-[#101419] text-sm font-medium leading-normal">Twitter</p>
+                 </div>
+                 <div class="contact-icon flex flex-col items-center gap-2 bg-gray-50 py-2.5 text-center w-20">
+                   <div class="rounded-full bg-[#e9edf1] p-2.5">
+                     <div class="text-[#101419]" data-icon="GithubLogo" data-size="20px" data-weight="regular">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
+                         <path
+                           d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48A8,8,0,0,0,80,73.83a43.81,43.81,0,0,1,.79-33.58a43.88,43.88,0,0,1,32.32,20.06A8,8,0,0,0,119.82,64h32.35a8,8,0,0,0,6.74-3.69,43.87,43.87,0,0,1,32.32-20.06A43.81,43.81,0,0,1,192,73.83a8.09,8.09,0,0,0,1,7.65A41.72,41.72,0,0,1,200,104Z"
+                         ></path>
+                       </svg>
+                     </div>
+                   </div>
+                   <p class="text-[#101419] text-sm font-medium leading-normal">GitHub</p>
+                 </div>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
