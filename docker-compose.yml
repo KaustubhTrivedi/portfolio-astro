@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  portfolio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    ports:
+      - "3000:3000"
+    container_name: portfolio-astro
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+
+  # Development service (optional)
+  portfolio-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    ports:
+      - "4321:4321"
+    container_name: portfolio-astro-dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - dev

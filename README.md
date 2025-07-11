@@ -33,6 +33,41 @@ A modern, responsive portfolio website built with Astro, featuring smooth animat
 - **[Motion](https://motion.dev/)** - Smooth animations and interactions
 - **[ESLint](https://eslint.org/)** - Code linting and quality assurance
 
+## 🐳 Docker Support
+
+This project includes full Docker support with multi-stage builds for both development and production environments.
+
+### Quick Start with Docker
+
+```bash
+# Build and run production container
+docker-compose up --build
+
+# Run development container with hot reload
+docker-compose --profile dev up --build portfolio-dev
+```
+
+### Manual Docker Commands
+
+```bash
+# Build the production image
+docker build -t portfolio-astro .
+
+# Run the container
+docker run -p 3000:3000 portfolio-astro
+```
+
+### Docker Features
+- **Multi-stage builds** - Optimized production image size
+- **Static file server** - Lightweight `serve` for production hosting
+- **Development mode** - Hot reload support with volume mounting
+- **Non-root user** - Security-focused container execution
+- **Proxy-ready** - Designed to work with external nginx proxy managers
+
+Your portfolio will be available at:
+- **Production**: http://localhost:3000
+- **Development**: http://localhost:4321
+
 ## 🌐 Live Demo
 
 🔗 **[View Live Portfolio](your-live-url-here)**
